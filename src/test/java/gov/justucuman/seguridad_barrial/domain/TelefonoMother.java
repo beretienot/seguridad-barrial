@@ -1,14 +1,12 @@
 package gov.justucuman.seguridad_barrial.domain;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class TelefonoMother {
 
     public static Telefono valid() {
-           // Genera un teléfono aleatorio de 10 dígitos
-           StringBuilder sb = new StringBuilder();
-           for (int i = 0; i < 10; i++) {
-              sb.append((int) (Math.random() * 10));
-           }
-           return new Telefono(sb.toString());
+        long number = ThreadLocalRandom.current().nextLong(1000000000L, 9999999999L);
+        return new Telefono(String.valueOf(number));
     }
 
     public static Telefono withNull() {

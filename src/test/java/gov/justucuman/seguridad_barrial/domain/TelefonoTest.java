@@ -11,7 +11,7 @@ class TelefonoTest {
     void shouldCreateTelefono_whenValidValue() {
         Telefono telefono = TelefonoMother.valid();
 
-        assertThat(telefono.getValor()).isEqualTo("3814001234");
+        assertThat(telefono.getValor()).isNotBlank();
     }
 
     @Test
@@ -30,8 +30,9 @@ class TelefonoTest {
 
     @Test
     void shouldBeEqual_whenSameValor() {
-        Telefono telefono1 = TelefonoMother.valid();
-        Telefono telefono2 = TelefonoMother.valid();
+        String valor = "3814001234";
+        Telefono telefono1 = new Telefono(valor);
+        Telefono telefono2 = new Telefono(valor);
 
         assertThat(telefono1).isEqualTo(telefono2);
         assertThat(telefono1.hashCode()).isEqualTo(telefono2.hashCode());

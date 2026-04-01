@@ -1,7 +1,6 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
 import gov.justucuman.seguridad_barrial.application.PropietarioRemover;
-import gov.justucuman.seguridad_barrial.infrastructure.input.mapper.PropietarioRemoverAdapterMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -17,12 +16,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PropietarioRemoverDeleteAdapter.class)
 class PropietarioRemoverDeleteAdapterTest {
+
     @Autowired
     private MockMvc mockMvc;
+
     @MockitoBean
     private PropietarioRemover useCase;
-    @MockitoBean
-    private PropietarioRemoverAdapterMapper mapper;
 
     @Test
     void shouldReturnNoContent_whenValidId() throws Exception {

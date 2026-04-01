@@ -1,4 +1,4 @@
-package gov.justucuman.seguridad_barrial.application.mapper;
+package gov.justucuman.seguridad_barrial.application;
 
 import gov.justucuman.seguridad_barrial.application.PropietarioFinderResult;
 import gov.justucuman.seguridad_barrial.domain.Propietario;

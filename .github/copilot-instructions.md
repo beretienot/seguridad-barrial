@@ -15,9 +15,12 @@ Generar código siguiendo Clean Architecture / Hexagonal y Domain-Driven Design 
 Nota: cada instrucción modular incluye su checklist de testing unitario como parte del desarrollo.
 
 ## Planificacion Obligatoria
-- Antes de implementar cualquier cambio, definir un plan breve de 3-5 pasos.
-- Ejecutar el trabajo por etapas y actualizar el estado del plan al completar cada etapa.
-- Si surge nueva informacion, ajustar el plan antes de continuar.
+- Antes de implementar cualquier cambio, definir un plan con este formato:
+  1. Listar los archivos a crear o modificar, agrupados por capa.
+  2. Describir en una línea qué cambia en cada archivo.
+  3. Identificar contratos mínimos que la capa actual necesita de la siguiente.
+- Ejecutar el trabajo por etapas y marcar cada archivo como completado al terminar.
+- Si surge nueva información, ajustar el plan antes de continuar.
 - No pasar a la siguiente capa sin validar la etapa actual.
 
 ## Capas

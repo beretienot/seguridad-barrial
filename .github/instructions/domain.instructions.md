@@ -14,6 +14,12 @@ Definir reglas de implementacion para la capa domain de la API REST Seguridad Ba
 - OutputPorts.
 - Excepciones y validaciones puras de negocio.
 
+## Excepciones de Negocio
+- Las excepciones de negocio se definen en domain, sin dependencias de framework.
+- Representan situaciones esperadas del negocio: entidad no encontrada, regla de negocio violada, conflicto de datos (ej: `PropietarioNotFoundException`, `DniDuplicadoException`).
+- Extienden `RuntimeException`.
+- No contienen lógica, solo el mensaje que describe la violación.
+
 ## Planificacion Previa (obligatoria)
 - Antes de codificar, definir un plan breve de 3-5 pasos.
 - Confirmar que la regla o concepto pertenece realmente al negocio y no a infraestructura.
@@ -90,7 +96,7 @@ public class Dni {
 ```java
 public class Propietario {
 
-  private UUID id;
+  private final UUID id;
   private final Nombre nombre;
   private final Apellido apellido;
   private final Dni dni;
@@ -100,10 +106,14 @@ public class Propietario {
 
   public Propietario(UUID id, Nombre nombre, Apellido apellido, Dni dni,
                      Direccion direccion, Telefono telefono, Email email) {
-    if (id == null) {
-      throw new IllegalArgumentException("El id es obligatorio");
-    }
-    // Cada Value Object valida sus propias invariantes en su constructor.
+    if (id == null) throw new IllegalArgumentException("El id es obligatorio");
+    if (nombre == null) throw new IllegalArgumentException("El nombre es obligatorio");
+    if (apellido == null) throw new IllegalArgumentException("El apellido es obligatorio");
+    if (dni == null) throw new IllegalArgumentException("El dni es obligatorio");
+    if (direccion == null) throw new IllegalArgumentException("La direccion es obligatoria");
+    if (telefono == null) throw new IllegalArgumentException("El telefono es obligatorio");
+    if (email == null) throw new IllegalArgumentException("El email es obligatorio");
+    // Cada Value Object ya validó sus propias invariantes en su constructor.
     this.id = id;
     this.nombre = nombre;
     this.apellido = apellido;

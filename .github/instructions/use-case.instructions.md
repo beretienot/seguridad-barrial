@@ -5,9 +5,11 @@ applyTo: "src/main/java/**/application/**/*.java"
 
 # use-case.instructions.md
 
-## Reglas adicionales de testing
-- Solo se crean tests unitarios para Adapters (input/output) y Use Cases (application). No se testean directamente entidades de dominio ni value objects salvo edge cases justificados.
-- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones y mejorar la robustez de los tests. Se permiten variantes explícitas para casos de error o edge cases.
+## Reglas de testing para esta capa
+- Los tests cubren exclusivamente el Use Case.
+- Se usan reales: mappers de use case, Commands, Results, entidades de dominio y Value Objects.
+- Se mockean exclusivamente los OutputPorts: son el único punto de cruce hacia otra capa.
+- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones. Se permiten variantes explícitas para casos de error o edge cases.
 
 ## Objetivo
 Definir reglas de implementacion para la capa application de la API REST Seguridad Barrial siguiendo Clean Architecture.
@@ -24,6 +26,10 @@ Definir reglas de implementacion para la capa application de la API REST Segurid
 - Confirmar OutputPort requerido y estrategia de mapeo Command -> Domain -> Result.
 - Implementar luego de validar el plan y actualizarlo al terminar cada paso.
 
+## Excepciones de Negocio
+- El use case no captura ni transforma excepciones de negocio lanzadas por el dominio o el OutputPort.
+- Se propagan tal cual hacia el input adapter, que es el único responsable de traducirlas a respuesta HTTP.
+
 ## Reglas Obligatorias
 - Interface de use case: {Entidad}{Accion}.
 - Implementacion: {Entidad}{Accion}UseCase.
@@ -34,12 +40,13 @@ Definir reglas de implementacion para la capa application de la API REST Segurid
 - Recibir Command y devolver Result.
 - Orquestar dominio y delegar persistencia/externalidades a OutputPort.
 - No depender de repositorios JPA ni clases de infraestructura.
-- Al mapear Command -> Domain, construir **todos** los Value Objects del dominio (ej: `new Dni(command.getDni())`, `new Nombre(command.getNombre())`, etc.) para que las validaciones de negocio se ejecuten en la creacion. Todas las propiedades de la entidad de dominio deben ser Value Objects (excepto `UUID id`).
+- El mapper de use case es responsable de construir **todos** los Value Objects al mapear Command → Domain (ej: `new Dni(command.getDni())`, `new Nombre(command.getNombre())`). Esto garantiza que las validaciones de negocio se ejecuten durante el mapeo, antes de llegar al OutputPort.
 
 ## Checklist Rapido
 - [ ] Naming de interface/implementacion/command/result correcto.
 - [ ] Metodo unico perform(...).
 - [ ] Mapper de use case con MapStruct (componentModel = "spring").
+- [ ] El mapper construye todos los Value Objects al mapear Command → Domain.
 - [ ] Logs de inicio, paso clave y resultado.
 - [ ] Dependencias solo a dominio y puertos.
 
@@ -68,15 +75,18 @@ public class EntidadCreatorUseCase implements EntidadCreator {
 
 ## Testing Integrado (obligatorio durante desarrollo)
 - Crear test unitario de cada use case implementado.
-- Mockear solo OutputPorts y configuraciones externas.
-- Usar mappers reales del use case.
-- Cubrir minimo:
-  - escenario exitoso;
-  - error de validacion de negocio;
-  - propagacion/control de excepcion de output port;
-  - verificacion de invocacion al output port con datos esperados.
-- Validar que Command -> Domain -> Result se transforma correctamente.
-- Incluir en estos tests los casos de dominio necesarios (invariantes y validaciones) cuando se ejecuten a traves del flujo del use case.
+- Cubrir mínimo:
+  - escenario exitoso: verificar que el OutputPort fue invocado con el dominio correcto y que el Result refleja lo devuelto;
+  - error de validación de negocio: invariantes del dominio que se disparan al construir Value Objects desde el Command;
+  - propagación de excepción del OutputPort: el use case no la suprime ni la transforma indebidamente.
+- Estos tests validan de forma indirecta el dominio: si el mapper construye los Value Objects con datos inválidos, el constructor del Value Object falla aquí.
+- Para verificar que la transformación Command → Domain es correcta, usar `ArgumentCaptor` para capturar el objeto de dominio que el use case pasó al OutputPort mock y verificar sus propiedades contra el Command original. No construir el objeto de dominio esperado manualmente en el test.
+
+```java
+ArgumentCaptor<Entidad> captor = ArgumentCaptor.forClass(Entidad.class);
+verify(outputPort).perform(captor.capture());
+assertThat(captor.getValue().getDni().getValor()).isEqualTo(command.getDni());
+```
 
 ## Definition Of Done
 - Use Case cumple convenciones de nombre y estructura.

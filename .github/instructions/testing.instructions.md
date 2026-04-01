@@ -5,9 +5,10 @@ applyTo: "src/test/java/**/*.java"
 
 # testing.instructions.md
 
-## Reglas adicionales
-- Solo se crean tests unitarios para Adapters (input/output) y Use Cases (application). No se testean directamente entidades de dominio ni value objects salvo edge cases justificados.
-- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones y mejorar la robustez de los tests. Se permiten variantes explícitas para casos de error o edge cases.
+## Reglas de testing transversales
+- En el test de cada capa: se usan reales todas las clases que pertenecen a esa capa, y se mockea todo lo que cruza hacia otra capa.
+- Los objetos de dominio y Value Objects nunca se mockean: son modelos puros y siempre se instancian reales.
+- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones. Se permiten variantes explícitas para casos de error o edge cases.
 
 ## Objetivo
 Definir reglas transversales para test unitarios de la API REST Seguridad Barrial siguiendo Clean Architecture / Hexagonal.
@@ -58,11 +59,6 @@ Ejemplos:
 - No crear Object Mothers para Use Cases, Adapters, Services, Mappers ni Repositories.
 - Los Object Mothers deben ofrecer variantes legibles para happy path, error path y edge cases comunes.
 - Para Value Objects, incluir variantes con datos validos e invalidos (ej: `DniMother.valid()`, `DniMother.withInvalidFormat()`).
-
-## Mocking Transversal
-- Mockear solo dependencias externas o de otro borde arquitectonico.
-- Preferir implementaciones reales para mappers, validadores y utilidades puras del modulo bajo test.
-- Si un mock evita probar una transformacion importante, probablemente esta mal ubicado.
 
 ## Contexto Spring vs Mockito Puro
 - Empezar por Mockito puro cuando la logica no requiere infraestructura Spring.

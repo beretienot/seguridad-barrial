@@ -5,9 +5,11 @@ applyTo: "src/main/java/**/infrastructure/input/**/*.java"
 
 # input-adapter.instructions.md
 
-## Reglas adicionales de testing
-- Solo se crean tests unitarios para Adapters (input/output) y Use Cases (application). No se testean directamente entidades de dominio ni value objects salvo edge cases justificados.
-- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones y mejorar la robustez de los tests. Se permiten variantes explícitas para casos de error o edge cases.
+## Reglas de testing para esta capa
+- Los tests cubren exclusivamente el Input Adapter.
+- Todo lo que pertenece a esta capa (mappers de input, DTOs) se usa real.
+- Todo lo que cruza hacia otra capa (interfaz del use case) se mockea.
+- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones. Se permiten variantes explícitas para casos de error o edge cases.
 
 ## Objetivo
 Definir reglas de implementacion para la capa infrastructure/input de la API REST Seguridad Barrial siguiendo Clean Architecture.
@@ -22,6 +24,11 @@ Definir reglas de implementacion para la capa infrastructure/input de la API RES
 - Confirmar contrato de entrada: Request DTO, validaciones, ruta HTTP y seguridad.
 - Confirmar dependencia al use case interface y formato de respuesta.
 - Implementar luego de validar el plan y actualizarlo al terminar cada paso.
+
+## Excepciones de Negocio
+- El input adapter es el único lugar donde las excepciones de negocio se traducen a respuesta HTTP.
+- Cada excepción relevante tiene su `@ExceptionHandler` en el adapter, con el código de estado y cuerpo JSON apropiados.
+- Convención de códigos: `NotFoundException` → 404, `DuplicadoException` → 409, `IllegalArgumentException` de Value Objects → 400.
 
 ## Reglas Obligatorias
 - Usar @RestController (API REST pura).
@@ -71,15 +78,18 @@ public class EntidadCreatorPostAdapter {
 ```
 
 ## Testing Integrado (obligatorio durante desarrollo)
-- Crear test unitario del adapter en el mismo package de test espejo.
-- Mockear solo interfaces de use case (dependencias de otra capa).
-- Usar mappers de input reales en el test.
-- Cubrir minimo:
-  - flujo exitoso con codigo de estado y body esperado;
-  - validacion fallida (400 Bad Request);
-  - excepcion manejada por @ExceptionHandler;
-  - verificacion de ResponseEntity y contenido JSON.
-- Verificar interaccion con use case (invocacion y argumentos mapeados).
+- Crear test unitario del adapter en el package de test espejo.
+- Cubrir mínimo:
+  - flujo exitoso: código de estado, body de respuesta y verificación de que el use case fue invocado con los argumentos correctos;
+  - validación fallida (400 Bad Request): el adapter rechaza el request sin llegar al use case;
+  - excepción del use case: el @ExceptionHandler la convierte en respuesta JSON consistente.
+- Para verificar que el Command fue construido correctamente a partir del Request, usar `ArgumentCaptor` para capturar el Command que el adapter pasó al use case mock y verificar sus propiedades contra el Request original. No construir el Command esperado manualmente en el test.
+
+```java
+ArgumentCaptor<EntidadCreatorCommand> captor = ArgumentCaptor.forClass(EntidadCreatorCommand.class);
+verify(useCase).perform(captor.capture());
+assertThat(captor.getValue().getDni()).isEqualTo(request.getDni());
+```
 
 ## Definition Of Done
 - Input Adapter cumple estructura y convenciones REST de capa.

@@ -1,5 +1,6 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
+import gov.justucuman.seguridad_barrial.domain.PropietarioNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,27 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("Error de validacion de negocio: {}", ex.getMessage());
+        Map<String, String> body = new HashMap<>();
+        body.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(PropietarioNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNotFoundException(PropietarioNotFoundException ex) {
+        log.warn("Propietario no encontrado: {}", ex.getMessage());
+        Map<String, String> body = new HashMap<>();
+        body.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
         log.error("Error inesperado: {}", ex.getMessage(), ex);
-
         Map<String, String> body = new HashMap<>();
         body.put("error", "Internal server error");
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

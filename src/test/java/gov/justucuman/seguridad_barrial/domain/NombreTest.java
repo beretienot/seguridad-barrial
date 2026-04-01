@@ -11,7 +11,7 @@ class NombreTest {
     void shouldCreateNombre_whenValidValue() {
         Nombre nombre = NombreMother.valid();
 
-        assertThat(nombre.getValor()).isEqualTo("Juan");
+        assertThat(nombre.getValor()).isNotBlank();
     }
 
     @Test
@@ -30,8 +30,9 @@ class NombreTest {
 
     @Test
     void shouldBeEqual_whenSameValor() {
-        Nombre nombre1 = NombreMother.valid();
-        Nombre nombre2 = NombreMother.valid();
+        String valor = "Juan";
+        Nombre nombre1 = new Nombre(valor);
+        Nombre nombre2 = new Nombre(valor);
 
         assertThat(nombre1).isEqualTo(nombre2);
         assertThat(nombre1.hashCode()).isEqualTo(nombre2.hashCode());

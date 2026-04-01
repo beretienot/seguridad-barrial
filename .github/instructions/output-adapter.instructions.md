@@ -5,9 +5,11 @@ applyTo: "src/main/java/**/infrastructure/output/**/*.java"
 
 # output-adapter.instructions.md
 
-## Reglas adicionales de testing
-- Solo se crean tests unitarios para Adapters (input/output) y Use Cases (application). No se testean directamente entidades de dominio ni value objects salvo edge cases justificados.
-- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones y mejorar la robustez de los tests. Se permiten variantes explícitas para casos de error o edge cases.
+## Reglas de testing para esta capa
+- Los tests cubren exclusivamente el Output Adapter.
+- Todo lo que pertenece a esta capa (mappers de output, entidades JPA) se usa real.
+- Todo lo que cruza hacia otra capa (JpaRepository, RestTemplate, clientes externos) se mockea.
+- Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones. Se permiten variantes explícitas para casos de error o edge cases.
 
 ## Objetivo
 Definir reglas de implementacion para la capa infrastructure/output de la API REST Seguridad Barrial siguiendo Clean Architecture.
@@ -23,6 +25,11 @@ Definir reglas de implementacion para la capa infrastructure/output de la API RE
 - Confirmar contrato del OutputPort y dependencias tecnicas (repository/client/file manager).
 - Confirmar estrategia transaccional y de manejo de errores tecnicos.
 - Implementar luego de validar el plan y actualizarlo al terminar cada paso.
+
+## Excepciones
+- El output adapter es el único lugar que conoce excepciones técnicas de infraestructura (ej: `DataIntegrityViolationException`).
+- Cuando una excepción técnica representa una violación de negocio conocida, el adapter la captura y la traduce a la excepción de dominio correspondiente (ej: `DataIntegrityViolationException` por DNI duplicado → `DniDuplicadoException`).
+- Las excepciones técnicas sin semántica de negocio se dejan propagar tal cual.
 
 ## Reglas Obligatorias
 - Adapter de salida implementa su OutputPort de dominio.
@@ -56,23 +63,32 @@ public class EntidadCreatorAdapter implements EntidadCreatorOutputPort {
   @Override
   @Transactional
   public Entidad perform(Entidad entidad) {
-    EntidadEntity entity = mapper.toEntity(entidad);
-    entity = repository.save(entity);
-    return mapper.toDomain(entity);
+    try {
+      EntidadEntity entity = mapper.toEntity(entidad);
+      entity = repository.save(entity);
+      return mapper.toDomain(entity);
+    } catch (DataIntegrityViolationException e) {
+      // Traducir excepción técnica conocida a excepción de negocio.
+      throw new DniDuplicadoException("Ya existe una entidad con ese DNI");
+    }
   }
 }
 ```
 
 ## Testing Integrado (obligatorio durante desarrollo)
 - Crear test unitario por adapter de output.
-- Si es JPA adapter: mockear solo JpaRepository y usar mapper real.
-- Si es REST adapter: mockear solo RestTemplate/WebClient y usar mapper real.
-- Cubrir minimo:
-  - flujo exitoso de persistencia o llamada externa;
-  - error tecnico (repository/client exception);
-  - verificacion de datos enviados al borde externo;
-  - validacion de transformacion hacia dominio.
-- En adapters con archivos, mockear FileManager y verificar operaciones esperadas.
+- Cubrir mínimo:
+  - flujo exitoso: verificar que el objeto enviado al borde externo tiene los valores correctos (Value Objects desempaquetados) y que el dominio devuelto está reconstruido correctamente;
+  - error técnico conocido: excepción técnica del repositorio se traduce a la excepción de negocio correspondiente;
+  - error técnico desconocido: excepción sin semántica de negocio se propaga sin ser suprimida;
+  - en adapters con archivos u otros componentes auxiliares, mockearlos y verificar las operaciones esperadas.
+- Para verificar que el mapeo Domain → Entity es correcto (Value Objects desempaquetados), usar `ArgumentCaptor` para capturar la Entity que el adapter pasó al repositorio mock y verificar sus campos primitivos contra el objeto de dominio original. No construir la Entity esperada manualmente en el test.
+
+```java
+ArgumentCaptor<EntidadEntity> captor = ArgumentCaptor.forClass(EntidadEntity.class);
+verify(repository).save(captor.capture());
+assertThat(captor.getValue().getDni()).isEqualTo(dominio.getDni().getValor());
+```
 
 ## Definition Of Done
 - Output Adapter cumple contrato OutputPort y convenciones de capa.

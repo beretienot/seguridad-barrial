@@ -16,6 +16,18 @@ public class PropietarioMother {
         );
     }
 
+    public static Propietario withId(java.util.UUID id) {
+        return new Propietario(
+            id,
+            NombreMother.valid(),
+            ApellidoMother.valid(),
+            DniMother.valid(),
+            DireccionMother.valid(),
+            TelefonoMother.valid(),
+            EmailMother.valid()
+        );
+    }
+
     public static Propietario withoutOptionalFields() {
         return new Propietario(
             UUID.randomUUID(),

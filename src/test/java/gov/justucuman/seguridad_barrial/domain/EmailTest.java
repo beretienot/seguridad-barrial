@@ -11,7 +11,7 @@ class EmailTest {
     void shouldCreateEmail_whenValidFormat() {
         Email email = EmailMother.valid();
 
-        assertThat(email.getValor()).isEqualTo("juan@example.com");
+        assertThat(email.getValor()).matches("^[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
     }
 
     @Test
@@ -30,8 +30,9 @@ class EmailTest {
 
     @Test
     void shouldBeEqual_whenSameValor() {
-        Email email1 = EmailMother.valid();
-        Email email2 = EmailMother.valid();
+        String valor = "test@example.com";
+        Email email1 = new Email(valor);
+        Email email2 = new Email(valor);
 
         assertThat(email1).isEqualTo(email2);
         assertThat(email1.hashCode()).isEqualTo(email2.hashCode());

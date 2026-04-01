@@ -14,12 +14,12 @@ class PropietarioTest {
         Propietario propietario = PropietarioMother.valid();
 
         assertThat(propietario.getId()).isNotNull();
-        assertThat(propietario.getNombre()).isEqualTo(NombreMother.valid());
-        assertThat(propietario.getApellido()).isEqualTo(ApellidoMother.valid());
-        assertThat(propietario.getDni()).isEqualTo(DniMother.valid());
-        assertThat(propietario.getDireccion()).isEqualTo(DireccionMother.valid());
-        assertThat(propietario.getTelefono()).isEqualTo(TelefonoMother.valid());
-        assertThat(propietario.getEmail()).isEqualTo(EmailMother.valid());
+        assertThat(propietario.getNombre()).isNotNull();
+        assertThat(propietario.getApellido()).isNotNull();
+        assertThat(propietario.getDni()).isNotNull();
+        assertThat(propietario.getDireccion()).isNotNull();
+        assertThat(propietario.getTelefono()).isNotNull();
+        assertThat(propietario.getEmail()).isNotNull();
     }
 
     @Test
