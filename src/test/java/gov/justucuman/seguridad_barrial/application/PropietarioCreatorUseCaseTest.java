@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -32,7 +31,6 @@ class PropietarioCreatorUseCaseTest {
     @Test
     void shouldInvokeOutputPort_whenValidCommand() {
         var command = PropietarioCreatorCommandMother.valid();
-        doNothing().when(outputPort).perform(any(Propietario.class));
 
         useCase.perform(command);
 
