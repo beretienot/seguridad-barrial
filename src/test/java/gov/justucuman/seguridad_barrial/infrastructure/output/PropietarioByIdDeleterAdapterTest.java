@@ -9,20 +9,20 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-class PropietarioRemoverAdapterTest {
+class PropietarioByIdDeleterAdapterTest {
     private PropietarioRepository repository;
-    private PropietarioRemoverAdapter adapter;
+    private PropietarioByIdDeleterAdapter adapter;
 
     @BeforeEach
     void setUp() {
         repository = mock(PropietarioRepository.class);
-        adapter = new PropietarioRemoverAdapter(repository);
+        adapter = new PropietarioByIdDeleterAdapter(repository);
     }
 
     @Test
     void shouldDeleteById() {
         UUID id = UUID.randomUUID();
-        adapter.deleteById(id);
+        adapter.perform(id);
         verify(repository).deleteById(id);
     }
 }

@@ -1,17 +1,18 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input.mapper;
 
-import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioUpdaterRequest;
 import org.junit.jupiter.api.Test;
 
+import gov.justucuman.seguridad_barrial.infrastructure.input.PropietarioByIdUpdaterRequest;
 
 
-class PropietarioUpdaterAdapterMapperTest {
-    // private final PropietarioUpdaterAdapterMapper mapper = new PropietarioUpdaterAdapterMapperImpl();
+
+class PropietarioByIdUpdaterAdapterMapperTest {
+    // private final PropietarioByIdUpdaterAdapterMapper mapper = new PropietarioByIdUpdaterAdapterMapperImpl();
 
     @Test
     void shouldMapRequestToCommand() {
         // UUID id = UUID.randomUUID();
-        PropietarioUpdaterRequest request = new PropietarioUpdaterRequest();
+        PropietarioByIdUpdaterRequest request = new PropietarioByIdUpdaterRequest();
         request.setNombre("Juan");
         request.setApellido("Perez");
         request.setDni("12345678");
@@ -19,7 +20,7 @@ class PropietarioUpdaterAdapterMapperTest {
         request.setTelefono("3811234567");
         request.setEmail("juan@email.com");
 
-        // PropietarioUpdaterCommand command = mapper.toCommand(id, request);
+        // PropietarioByIdUpdaterCommand command = mapper.toCommand(id, request);
         // assertThat(command.getId()).isEqualTo(id);
         // assertThat(command.getNombre()).isEqualTo("Juan");
         // assertThat(command.getApellido()).isEqualTo("Perez");

@@ -3,7 +3,7 @@ package gov.justucuman.seguridad_barrial.infrastructure.input;
 import tools.jackson.databind.ObjectMapper;
 import gov.justucuman.seguridad_barrial.application.PropietarioCreator;
 import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioCreatorRequestMother;
-import gov.justucuman.seguridad_barrial.infrastructure.input.mapper.PropietarioCreatorAdapterMapperImpl;
+import gov.justucuman.seguridad_barrial.infrastructure.input.PropietarioCreatorAdapterMapperImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -20,9 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(PropietarioCreatorPostAdapter.class)
+@WebMvcTest(PropietarioPostAdapter.class)
 @Import(PropietarioCreatorAdapterMapperImpl.class)
-class PropietarioCreatorPostAdapterTest {
+class PropietarioPostAdapterTest {
 
     @Autowired
     private MockMvc mockMvc;

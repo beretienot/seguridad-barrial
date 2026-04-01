@@ -2,6 +2,6 @@ package gov.justucuman.seguridad_barrial.application;
 
 import java.util.UUID;
 
-public interface PropietarioRemover {
+public interface PropietarioByIdDeleter {
     void perform(UUID id);
 }

@@ -1,7 +1,8 @@
 package gov.justucuman.seguridad_barrial.application;
 
 import gov.justucuman.seguridad_barrial.domain.Propietario;
-import gov.justucuman.seguridad_barrial.domain.PropietarioUpdaterOutputPort;
+import gov.justucuman.seguridad_barrial.domain.PropietarioByIdFinderOutputPort;
+import gov.justucuman.seguridad_barrial.domain.PropietarioByIdUpdaterOutputPort;
 import gov.justucuman.seguridad_barrial.domain.PropietarioMother;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,29 +12,32 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-class PropietarioUpdaterUseCaseTest {
+class PropietarioByIdUpdaterUseCaseTest {
 
-    private PropietarioUpdaterOutputPort outputPort;
-    private PropietarioUpdaterUseCaseMapper mapper;
-    private PropietarioUpdaterUseCase useCase;
+    private PropietarioByIdFinderOutputPort finderPort;
+    private PropietarioByIdUpdaterOutputPort updaterPort;
+    private PropietarioByIdUpdaterUseCaseMapper mapper;
+    private PropietarioByIdUpdaterUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        outputPort = mock(PropietarioUpdaterOutputPort.class);
-        mapper = new PropietarioUpdaterUseCaseMapper();
-        useCase = new PropietarioUpdaterUseCase(outputPort, mapper);
+        finderPort = mock(PropietarioByIdFinderOutputPort.class);
+        updaterPort = mock(PropietarioByIdUpdaterOutputPort.class);
+        mapper = new PropietarioByIdUpdaterUseCaseMapper();
+        useCase = new PropietarioByIdUpdaterUseCase(finderPort, updaterPort, mapper);
     }
 
     @Test
     void shouldUpdatePropietario_whenValidCommandProvided() {
         UUID id = UUID.randomUUID();
         Propietario existing = PropietarioMother.withId(id);
-        when(outputPort.findById(id)).thenReturn(existing);
+        when(finderPort.findById(id)).thenReturn(existing);
 
         int dni = ThreadLocalRandom.current().nextInt(1000000, 99999999);
-        PropietarioUpdaterCommand command = PropietarioUpdaterCommand.builder()
+        PropietarioByIdUpdaterCommand command = PropietarioByIdUpdaterCommand.builder()
                 .id(id)
                 .nombre("Nombre-" + UUID.randomUUID().toString().substring(0, 8))
                 .apellido("Apellido-" + UUID.randomUUID().toString().substring(0, 8))
@@ -46,7 +50,7 @@ class PropietarioUpdaterUseCaseTest {
         useCase.perform(command);
 
         ArgumentCaptor<Propietario> captor = ArgumentCaptor.forClass(Propietario.class);
-        verify(outputPort).update(captor.capture());
+        verify(updaterPort).perform(captor.capture());
         Propietario actualizado = captor.getValue();
         assertThat(actualizado.getId()).isEqualTo(id);
         assertThat(actualizado.getNombre().getValor()).isEqualTo(command.getNombre());
@@ -58,11 +62,11 @@ class PropietarioUpdaterUseCaseTest {
     }
 
     @Test
-    void shouldPropagateException_whenOutputPortFails() {
+    void shouldPropagateException_whenFinderPortFails() {
         UUID id = UUID.randomUUID();
-        when(outputPort.findById(id)).thenThrow(new RuntimeException("Error de persistencia"));
+        when(finderPort.findById(id)).thenThrow(new RuntimeException("Error de persistencia"));
 
-        PropietarioUpdaterCommand command = PropietarioUpdaterCommand.builder()
+        PropietarioByIdUpdaterCommand command = PropietarioByIdUpdaterCommand.builder()
                 .id(id)
                 .nombre("Nombre")
                 .apellido("Apellido")
@@ -70,7 +74,7 @@ class PropietarioUpdaterUseCaseTest {
                 .direccion("Calle Falsa")
                 .build();
 
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> useCase.perform(command))
+        assertThatThrownBy(() -> useCase.perform(command))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("Error de persistencia");
     }

@@ -1,10 +1,9 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
 import tools.jackson.databind.ObjectMapper;
-import gov.justucuman.seguridad_barrial.application.PropietarioUpdater;
-import gov.justucuman.seguridad_barrial.application.PropietarioUpdaterCommand;
-import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioUpdaterRequest;
-import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioUpdaterRequestMother;
+import gov.justucuman.seguridad_barrial.application.PropietarioByIdUpdater;
+import gov.justucuman.seguridad_barrial.application.PropietarioByIdUpdaterCommand;
+import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioByIdUpdaterRequestMother;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,9 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(PropietarioUpdaterPutAdapter.class)
-@Import(gov.justucuman.seguridad_barrial.infrastructure.input.mapper.PropietarioUpdaterAdapterMapperImpl.class)
-class PropietarioUpdaterPutAdapterTest {
+@WebMvcTest(PropietarioByIdPutAdapter.class)
+@Import(gov.justucuman.seguridad_barrial.infrastructure.input.PropietarioByIdUpdaterAdapterMapperImpl.class)
+class PropietarioByIdPutAdapterTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,19 +31,19 @@ class PropietarioUpdaterPutAdapterTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private PropietarioUpdater useCase;
+    private PropietarioByIdUpdater useCase;
 
     @Test
     void shouldReturnNoContent_whenValidRequest() throws Exception {
         UUID id = UUID.randomUUID();
-        PropietarioUpdaterRequest request = PropietarioUpdaterRequestMother.valid();
+        PropietarioByIdUpdaterRequest request = PropietarioByIdUpdaterRequestMother.valid();
 
         mockMvc.perform(put("/api/propietarios/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNoContent());
 
-        ArgumentCaptor<PropietarioUpdaterCommand> captor = ArgumentCaptor.forClass(PropietarioUpdaterCommand.class);
+        ArgumentCaptor<PropietarioByIdUpdaterCommand> captor = ArgumentCaptor.forClass(PropietarioByIdUpdaterCommand.class);
         verify(useCase).perform(captor.capture());
         assertThat(captor.getValue().getId()).isEqualTo(id);
         assertThat(captor.getValue().getNombre()).isEqualTo(request.getNombre());
@@ -56,7 +55,7 @@ class PropietarioUpdaterPutAdapterTest {
     @Test
     void shouldReturnBadRequest_whenNombreIsBlank() throws Exception {
         UUID id = UUID.randomUUID();
-        PropietarioUpdaterRequest request = PropietarioUpdaterRequestMother.withoutNombre();
+        PropietarioByIdUpdaterRequest request = PropietarioByIdUpdaterRequestMother.withoutNombre();
 
         mockMvc.perform(put("/api/propietarios/" + id)
                 .contentType(MediaType.APPLICATION_JSON)

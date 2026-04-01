@@ -1,6 +1,6 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
-import gov.justucuman.seguridad_barrial.application.PropietarioRemover;
+import gov.justucuman.seguridad_barrial.application.PropietarioByIdDeleter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/propietarios")
 @RequiredArgsConstructor
-public class PropietarioRemoverDeleteAdapter {
+public class PropietarioByIdDeleteAdapter {
 
-    private final PropietarioRemover useCase;
+    private final PropietarioByIdDeleter useCase;
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> perform(@PathVariable UUID id) {

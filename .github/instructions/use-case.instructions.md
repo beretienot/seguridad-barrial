@@ -31,12 +31,13 @@ Definir reglas de implementacion para la capa application de la API REST Segurid
 - Se propagan tal cual hacia el input adapter, que es el único responsable de traducirlas a respuesta HTTP.
 
 ## Reglas Obligatorias
-- Interface de use case: {Entidad}{Accion}.
-- Implementacion: {Entidad}{Accion}UseCase.
+- Interface de use case sin filtro: `{Entidad}{Accion}` (ej: `PropietarioCreator`).
+- Interface de use case con filtro: `{Entidad}By{Filtro}{Accion}` (ej: `PropietarioByIdFinder`, `PropietarioByIdUpdater`, `PropietarioByIdDeleter`).
+- Implementacion: igual que la interface con sufijo `UseCase` (ej: `PropietarioCreatorUseCase`, `PropietarioByIdFinderUseCase`).
 - Componente Spring: @Component (no @Service).
 - Inyeccion por constructor con @RequiredArgsConstructor.
 - Logging con @Slf4j.
-- Un solo metodo publico: perform(...).
+- Un solo metodo publico: `perform(...)`. No agregar metodos publicos auxiliares; la logica adicional va en metodos privados o en el mapper.
 - Recibir Command y devolver Result.
 - Orquestar dominio y delegar persistencia/externalidades a OutputPort.
 - No depender de repositorios JPA ni clases de infraestructura.
@@ -45,7 +46,7 @@ Definir reglas de implementacion para la capa application de la API REST Segurid
 ## Checklist Rapido
 - [ ] Naming de interface/implementacion/command/result correcto.
 - [ ] Metodo unico perform(...).
-- [ ] Mapper de use case con MapStruct (componentModel = "spring").
+- [ ] Mapper de use case con MapStruct (componentModel = "spring"). Nombre: `{Entidad}{Accion}UseCaseMapper` sin filtro, `{Entidad}By{Filtro}{Accion}UseCaseMapper` con filtro.
 - [ ] El mapper construye todos los Value Objects al mapear Command → Domain.
 - [ ] Logs de inicio, paso clave y resultado.
 - [ ] Dependencias solo a dominio y puertos.

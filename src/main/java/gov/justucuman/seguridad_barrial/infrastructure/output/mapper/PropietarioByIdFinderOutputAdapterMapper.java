@@ -12,7 +12,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", imports = {Nombre.class, Apellido.class, Dni.class, Direccion.class, Telefono.class, Email.class})
-public interface PropietarioFinderOutputAdapterMapper {
+public interface PropietarioByIdFinderOutputAdapterMapper {
     @Mapping(target = "nombre", expression = "java(new Nombre(entity.getNombre()))")
     @Mapping(target = "apellido", expression = "java(new Apellido(entity.getApellido()))")
     @Mapping(target = "dni", expression = "java(new Dni(entity.getDni()))")

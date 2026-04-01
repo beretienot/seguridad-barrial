@@ -3,11 +3,13 @@ package gov.justucuman.seguridad_barrial.infrastructure.input.dto;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class PropietarioUpdaterRequestMother {
+import gov.justucuman.seguridad_barrial.infrastructure.input.PropietarioByIdUpdaterRequest;
 
-    public static PropietarioUpdaterRequest valid() {
+public class PropietarioByIdUpdaterRequestMother {
+
+    public static PropietarioByIdUpdaterRequest valid() {
         int dni = ThreadLocalRandom.current().nextInt(1000000, 99999999);
-        PropietarioUpdaterRequest request = new PropietarioUpdaterRequest();
+        PropietarioByIdUpdaterRequest request = new PropietarioByIdUpdaterRequest();
         request.setNombre("Nombre-" + UUID.randomUUID().toString().substring(0, 8));
         request.setApellido("Apellido-" + UUID.randomUUID().toString().substring(0, 8));
         request.setDni(String.valueOf(dni));
@@ -17,8 +19,8 @@ public class PropietarioUpdaterRequestMother {
         return request;
     }
 
-    public static PropietarioUpdaterRequest withoutNombre() {
-        PropietarioUpdaterRequest request = valid();
+    public static PropietarioByIdUpdaterRequest withoutNombre() {
+        PropietarioByIdUpdaterRequest request = valid();
         request.setNombre(null);
         return request;
     }

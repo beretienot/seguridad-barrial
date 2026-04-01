@@ -1,7 +1,7 @@
-package gov.justucuman.seguridad_barrial.infrastructure.input.mapper;
+package gov.justucuman.seguridad_barrial.infrastructure.input;
 
 import gov.justucuman.seguridad_barrial.application.PropietarioCreatorCommand;
-import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioCreatorRequest;
+
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

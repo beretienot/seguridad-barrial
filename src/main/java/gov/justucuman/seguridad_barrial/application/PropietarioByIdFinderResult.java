@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Getter
 @Builder
-public class PropietarioFinderResult {
+public class PropietarioByIdFinderResult {
     private UUID id;
     private String nombre;
     private String apellido;

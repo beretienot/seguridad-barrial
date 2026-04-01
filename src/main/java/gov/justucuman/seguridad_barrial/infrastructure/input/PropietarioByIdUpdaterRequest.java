@@ -1,4 +1,4 @@
-package gov.justucuman.seguridad_barrial.infrastructure.input.dto;
+package gov.justucuman.seguridad_barrial.infrastructure.input;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Email;
 
 @Getter
 @Setter
-public class PropietarioUpdaterRequest {
+public class PropietarioByIdUpdaterRequest {
     @NotBlank
     private String nombre;
     @NotBlank

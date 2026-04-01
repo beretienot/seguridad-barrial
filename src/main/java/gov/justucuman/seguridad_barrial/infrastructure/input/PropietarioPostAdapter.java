@@ -2,8 +2,6 @@ package gov.justucuman.seguridad_barrial.infrastructure.input;
 
 import gov.justucuman.seguridad_barrial.application.PropietarioCreator;
 import gov.justucuman.seguridad_barrial.application.PropietarioCreatorCommand;
-import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioCreatorRequest;
-import gov.justucuman.seguridad_barrial.infrastructure.input.mapper.PropietarioCreatorAdapterMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/propietarios")
 @RequiredArgsConstructor
-public class PropietarioCreatorPostAdapter {
+public class PropietarioPostAdapter {
 
     private final PropietarioCreator useCase;
     private final PropietarioCreatorAdapterMapper mapper;

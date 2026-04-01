@@ -1,7 +1,7 @@
 
 package gov.justucuman.seguridad_barrial.application;
 
-import gov.justucuman.seguridad_barrial.domain.PropietarioRemoverOutputPort;
+import gov.justucuman.seguridad_barrial.domain.PropietarioByIdDeleterOutputPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,20 +9,20 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
-class PropietarioRemoverUseCaseTest {
-    private PropietarioRemoverOutputPort outputPort;
-    private PropietarioRemoverUseCase useCase;
+class PropietarioByIdDeleterUseCaseTest {
+    private PropietarioByIdDeleterOutputPort outputPort;
+    private PropietarioByIdDeleterUseCase useCase;
 
     @BeforeEach
     void setUp() {
-        outputPort = mock(PropietarioRemoverOutputPort.class);
-        useCase = new PropietarioRemoverUseCase(outputPort);
+        outputPort = mock(PropietarioByIdDeleterOutputPort.class);
+        useCase = new PropietarioByIdDeleterUseCase(outputPort);
     }
 
     @Test
     void shouldDeleteById_whenValidIdProvided() {
         UUID id = UUID.randomUUID();
         useCase.perform(id);
-        verify(outputPort).deleteById(id);
+        verify(outputPort).perform(id);
     }
 }

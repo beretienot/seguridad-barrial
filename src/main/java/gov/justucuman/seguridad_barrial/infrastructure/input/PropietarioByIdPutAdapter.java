@@ -1,9 +1,7 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
-import gov.justucuman.seguridad_barrial.application.PropietarioUpdater;
-import gov.justucuman.seguridad_barrial.application.PropietarioUpdaterCommand;
-import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioUpdaterRequest;
-import gov.justucuman.seguridad_barrial.infrastructure.input.mapper.PropietarioUpdaterAdapterMapper;
+import gov.justucuman.seguridad_barrial.application.PropietarioByIdUpdater;
+import gov.justucuman.seguridad_barrial.application.PropietarioByIdUpdaterCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,15 +18,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/propietarios")
 @RequiredArgsConstructor
-public class PropietarioUpdaterPutAdapter {
+public class PropietarioByIdPutAdapter {
 
-    private final PropietarioUpdater useCase;
-    private final PropietarioUpdaterAdapterMapper mapper;
+    private final PropietarioByIdUpdater useCase;
+    private final PropietarioByIdUpdaterAdapterMapper mapper;
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable UUID id, @Valid @RequestBody PropietarioUpdaterRequest request) {
+    public ResponseEntity<Void> perform(@PathVariable UUID id, @Valid @RequestBody PropietarioByIdUpdaterRequest request) {
         log.info("Actualizando propietario con id: {}", id);
-        PropietarioUpdaterCommand command = mapper.toCommand(id, request);
+        PropietarioByIdUpdaterCommand command = mapper.toCommand(id, request);
         useCase.perform(command);
         log.info("Propietario actualizado exitosamente con id: {}", id);
         return ResponseEntity.noContent().build();

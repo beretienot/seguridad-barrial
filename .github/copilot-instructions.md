@@ -32,30 +32,38 @@ Nota: cada instrucción modular incluye su checklist de testing unitario como pa
 ## Convenciones de Nombres
 
 ### Application
-- Interface Use Case: `{Entidad}{Accion}`
-- Implementacion Use Case: `{Entidad}{Accion}UseCase`
-- Command: `{Entidad}{Accion}Command`
-- Result: `{Entidad}{Accion}Result`
-- Mapper: `{Entidad}{Accion}UseCaseMapper`
+- Interface Use Case sin filtro: `{Entidad}{Accion}` (ej: `PropietarioCreator`)
+- Interface Use Case con filtro: `{Entidad}By{Filtro}{Accion}` (ej: `PropietarioByIdFinder`, `PropietarioByIdUpdater`, `PropietarioByIdDeleter`)
+- Implementacion Use Case: igual que la interface con sufijo `UseCase` (ej: `PropietarioCreatorUseCase`, `PropietarioByIdFinderUseCase`)
+- Command sin filtro: `{Entidad}{Accion}Command` (ej: `PropietarioCreatorCommand`)
+- Command con filtro: `{Entidad}By{Filtro}{Accion}Command` (ej: `PropietarioByIdUpdaterCommand`)
+- Result sin filtro: `{Entidad}{Accion}Result` (ej: `PropietarioCreatorResult`)
+- Result con filtro: `{Entidad}By{Filtro}{Accion}Result` (ej: `PropietarioByIdFinderResult`)
+- Mapper sin filtro: `{Entidad}{Accion}UseCaseMapper` (ej: `PropietarioCreatorUseCaseMapper`)
+- Mapper con filtro: `{Entidad}By{Filtro}{Accion}UseCaseMapper` (ej: `PropietarioByIdFinderUseCaseMapper`)
 
 ### Domain
-- OutputPort: `{Entidad}{Accion}OutputPort`
+- OutputPort sin filtro: `{Entidad}{Accion}OutputPort` (ej: `PropietarioCreatorOutputPort`)
+- OutputPort con filtro: `{Entidad}By{Filtro}{Accion}OutputPort` (ej: `PropietarioByIdFinderOutputPort`, `PropietarioByIdUpdaterOutputPort`, `PropietarioByIdDeleterOutputPort`)
 - Entidad de dominio: nombre simple de negocio (Aggregate Root o Entity)
 - Value Object: nombre que representa el concepto de valor (ej: `Dni`, `Email`, `Direccion`)
 
 ### Infrastructure Input
-- Adapter GET: `{Entidad}{Accion}GetAdapter`
-- Adapter POST: `{Entidad}{Accion}PostAdapter`
-- Adapter PUT: `{Entidad}{Accion}PutAdapter`
-- Adapter DELETE: `{Entidad}{Accion}DeleteAdapter`
-- Mapper de input: `{Entidad}{Accion}AdapterMapper`
-- Request DTO: `{Entidad}{Accion}Request`
-- Response DTO: `{Entidad}{Accion}Response`
+- Adapter GET con filtro: `{Entidad}By{Filtro}GetAdapter` (ej: `PropietarioByIdGetAdapter`, `PropietarioByDniGetAdapter`)
+- Adapter GET sin filtro (listado): `{Entidad}sGetAdapter` (ej: `PropietariosGetAdapter`)
+- Adapter POST: `{Entidad}PostAdapter` (ej: `PropietarioPostAdapter`)
+- Adapter PUT: `{Entidad}By{Filtro}PutAdapter` (ej: `PropietarioByIdPutAdapter`)
+- Adapter DELETE: `{Entidad}By{Filtro}DeleteAdapter` (ej: `PropietarioByIdDeleteAdapter`)
+- Mapper de input sin filtro: `{Entidad}{Accion}AdapterMapper` (ej: `PropietarioCreatorAdapterMapper`)
+- Mapper de input con filtro: `{Entidad}By{Filtro}{Accion}AdapterMapper` (ej: `PropietarioByIdFinderAdapterMapper`)
+- Request DTO: `{Entidad}{Accion}Request` (ej: `PropietarioCreatorRequest`)
+- Response DTO: `{Entidad}{Accion}Response` (ej: `PropietarioByIdFinderResponse`)
 
 ### Infrastructure Output
-- Output Adapter directo: `{Entidad}{Accion}OutputAdapter`
-- Adapter de persistencia: `{Entidad}{Accion}Adapter`
-- Mapper de output: `{Entidad}{Accion}OutputAdapterMapper` o `{Entidad}{Accion}AdapterMapper`
+- Adapter de persistencia sin filtro: `{Entidad}{Accion}Adapter` (ej: `PropietarioCreatorAdapter`)
+- Adapter de persistencia con filtro: `{Entidad}By{Filtro}{Accion}Adapter` (ej: `PropietarioByIdFinderAdapter`, `PropietarioByIdUpdaterAdapter`, `PropietarioByIdDeleterAdapter`)
+- Mapper de output sin filtro: `{Entidad}{Accion}OutputAdapterMapper` (ej: `PropietarioCreatorOutputAdapterMapper`)
+- Mapper de output con filtro: `{Entidad}By{Filtro}{Accion}OutputAdapterMapper` (ej: `PropietarioByIdFinderOutputAdapterMapper`)
 - Entidad JPA: `{Entidad}Entity`
 - Repositorio: `{Entidad}Repository`
 

@@ -11,6 +11,17 @@ applyTo: "src/main/java/**/infrastructure/input/**/*.java"
 - Todo lo que cruza hacia otra capa (interfaz del use case) se mockea.
 - Los ObjectMother deben generar datos aleatorios por defecto para evitar colisiones. Se permiten variantes explícitas para casos de error o edge cases.
 
+## Convención de Nombres
+
+- GET con filtro: `{Entidad}By{Filtro}GetAdapter` (ej: `PropietarioByIdGetAdapter`, `PropietarioByDniGetAdapter`).
+- GET sin filtro (listado): `{Entidad}sGetAdapter` (ej: `PropietariosGetAdapter`).
+- POST: `{Entidad}PostAdapter` (ej: `PropietarioPostAdapter`).
+- PUT: `{Entidad}By{Filtro}PutAdapter` (ej: `PropietarioByIdPutAdapter`).
+- DELETE: `{Entidad}By{Filtro}DeleteAdapter` (ej: `PropietarioByIdDeleteAdapter`).
+- El filtro describe el criterio en inglés, consistente con las acciones del resto de capas.
+- Mapper de input sin filtro: `{Entidad}{Accion}AdapterMapper` (ej: `PropietarioCreatorAdapterMapper`).
+- Mapper de input con filtro: `{Entidad}By{Filtro}{Accion}AdapterMapper` (ej: `PropietarioByIdFinderAdapterMapper`).
+
 ## Objetivo
 Definir reglas de implementacion para la capa infrastructure/input de la API REST Seguridad Barrial siguiendo Clean Architecture.
 
@@ -35,7 +46,7 @@ Definir reglas de implementacion para la capa infrastructure/input de la API RES
 - Usar @Slf4j y @RequiredArgsConstructor.
 - Definir @RequestMapping base con recurso en plural (ej: `/api/entidades`).
 - Aplicar @PreAuthorize con la autoridad correcta cuando se requiera seguridad.
-- El metodo principal debe llamarse perform(...).
+- Un solo metodo publico: `perform(...)`. Cada adapter maneja exactamente un endpoint HTTP; no agregar metodos publicos adicionales.
 - Retornar ResponseEntity con el codigo de estado HTTP apropiado.
 - Usar @Valid para validacion de Request DTOs.
 - Manejar errores con @ExceptionHandler retornando JSON consistente.

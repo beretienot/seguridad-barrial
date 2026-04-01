@@ -10,9 +10,9 @@ import gov.justucuman.seguridad_barrial.domain.Telefono;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PropietarioUpdaterUseCaseMapper {
+public class PropietarioByIdUpdaterUseCaseMapper {
 
-    public Propietario applyUpdate(PropietarioUpdaterCommand command, Propietario existing) {
+    public Propietario applyUpdate(PropietarioByIdUpdaterCommand command, Propietario existing) {
         return existing.update(
             command.getNombre() != null ? new Nombre(command.getNombre()) : null,
             command.getApellido() != null ? new Apellido(command.getApellido()) : null,

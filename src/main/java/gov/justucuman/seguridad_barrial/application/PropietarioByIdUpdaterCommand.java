@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Getter
 @Builder
-public class PropietarioUpdaterCommand {
+public class PropietarioByIdUpdaterCommand {
     private final UUID id;
     private final String nombre;
     private final String apellido;

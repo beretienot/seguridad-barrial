@@ -2,6 +2,8 @@ package gov.justucuman.seguridad_barrial.infrastructure.input.dto;
 
 import java.util.UUID;
 
+import gov.justucuman.seguridad_barrial.infrastructure.input.PropietarioCreatorRequest;
+
 public class PropietarioCreatorRequestMother {
 
     public static final UUID DEFAULT_ID = UUID.fromString("a1b2c3d4-e5f6-7890-abcd-ef1234567890");

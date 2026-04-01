@@ -36,7 +36,11 @@ Definir reglas de implementacion para la capa infrastructure/output de la API RE
 - Usar @Component y @Slf4j.
 - Para escritura, usar @Transactional.
 - Inyectar repositorio, mapper y componentes auxiliares necesarios.
-- Mantener metodo principal perform(...).
+- Implementar exactamente los metodos definidos por el OutputPort correspondiente, sin agregar metodos publicos propios. Si el OutputPort define un unico metodo de escritura, nombrarlo `perform(...)`; si define metodos de consulta o multiples operaciones, respetar los nombres del contrato del puerto.
+- Naming del adapter sin filtro: `{Entidad}{Accion}Adapter` (ej: `PropietarioCreatorAdapter`).
+- Naming del adapter con filtro: `{Entidad}By{Filtro}{Accion}Adapter` (ej: `PropietarioByIdFinderAdapter`, `PropietarioByIdDeleterAdapter`).
+- Mapper de output sin filtro: `{Entidad}{Accion}OutputAdapterMapper` (ej: `PropietarioCreatorOutputAdapterMapper`).
+- Mapper de output con filtro: `{Entidad}By{Filtro}{Accion}OutputAdapterMapper` (ej: `PropietarioByIdFinderOutputAdapterMapper`).
 - Delegar persistencia en repositorio y conversion en mapper.
 - Evitar logica de negocio compleja en adapter.
 - Al mapear Domain -> Entity, desempaquetar **todos** los Value Objects a tipos primitivos (ej: `propietario.getDni().getValor()`, `propietario.getNombre().getValor()`).

@@ -1,9 +1,7 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
-import gov.justucuman.seguridad_barrial.application.PropietarioFinder;
-import gov.justucuman.seguridad_barrial.application.PropietarioFinderResult;
-import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioFinderResponse;
-import gov.justucuman.seguridad_barrial.infrastructure.input.mapper.PropietarioFinderAdapterMapper;
+import gov.justucuman.seguridad_barrial.application.PropietarioByIdFinder;
+import gov.justucuman.seguridad_barrial.application.PropietarioByIdFinderResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +16,16 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/propietarios")
 @RequiredArgsConstructor
-public class PropietarioFinderGetAdapter {
+public class PropietarioByIdGetAdapter {
 
-    private final PropietarioFinder useCase;
-    private final PropietarioFinderAdapterMapper mapper;
+    private final PropietarioByIdFinder useCase;
+    private final PropietarioByIdFinderAdapterMapper mapper;
 
     @GetMapping("/{id}")
-    public ResponseEntity<PropietarioFinderResponse> findById(@PathVariable UUID id) {
+    public ResponseEntity<PropietarioByIdFinderResponse> perform(@PathVariable UUID id) {
         log.info("Buscando propietario con id: {}", id);
-        PropietarioFinderResult result = useCase.perform(id);
-        PropietarioFinderResponse response = mapper.toResponse(result);
+        PropietarioByIdFinderResult result = useCase.perform(id);
+        PropietarioByIdFinderResponse response = mapper.toResponse(result);
         return ResponseEntity.ok(response);
     }
 }

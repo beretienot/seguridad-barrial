@@ -1,9 +1,9 @@
 package gov.justucuman.seguridad_barrial.infrastructure.output;
 
 import gov.justucuman.seguridad_barrial.domain.Propietario;
-import gov.justucuman.seguridad_barrial.domain.PropietarioFinderOutputPort;
+import gov.justucuman.seguridad_barrial.domain.PropietarioByIdFinderOutputPort;
 import gov.justucuman.seguridad_barrial.domain.PropietarioNotFoundException;
-import gov.justucuman.seguridad_barrial.infrastructure.output.mapper.PropietarioFinderOutputAdapterMapper;
+import gov.justucuman.seguridad_barrial.infrastructure.output.mapper.PropietarioByIdFinderOutputAdapterMapper;
 import gov.justucuman.seguridad_barrial.infrastructure.output.persistence.PropietarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PropietarioFinderAdapter implements PropietarioFinderOutputPort {
+public class PropietarioByIdFinderAdapter implements PropietarioByIdFinderOutputPort {
 
     private final PropietarioRepository repository;
-    private final PropietarioFinderOutputAdapterMapper mapper;
+    private final PropietarioByIdFinderOutputAdapterMapper mapper;
 
     @Override
     @Transactional(readOnly = true)

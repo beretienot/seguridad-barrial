@@ -1,4 +1,4 @@
-package gov.justucuman.seguridad_barrial.infrastructure.input.dto;
+package gov.justucuman.seguridad_barrial.infrastructure.input;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -128,9 +128,16 @@ public class Propietario {
 ```
 
 ### OutputPort
+- Sin filtro: `{Entidad}{Accion}OutputPort` (ej: `PropietarioCreatorOutputPort`).
+- Con filtro: `{Entidad}By{Filtro}{Accion}OutputPort` (ej: `PropietarioByIdFinderOutputPort`, `PropietarioByIdUpdaterOutputPort`, `PropietarioByIdDeleterOutputPort`).
+
 ```java
 public interface PropietarioCreatorOutputPort {
-  Propietario perform(Propietario propietario);
+  void perform(Propietario propietario);
+}
+
+public interface PropietarioByIdFinderOutputPort {
+  Propietario perform(UUID id);
 }
 ```
 
