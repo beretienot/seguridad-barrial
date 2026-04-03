@@ -1,5 +1,6 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
+import gov.justucuman.seguridad_barrial.domain.PropiedadNotFoundException;
 import gov.justucuman.seguridad_barrial.domain.PropietarioNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PropietarioNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleNotFoundException(PropietarioNotFoundException ex) {
         log.warn("Propietario no encontrado: {}", ex.getMessage());
+        Map<String, String> body = new HashMap<>();
+        body.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(PropiedadNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleNotFoundException(PropiedadNotFoundException ex) {
+        log.warn("Propiedad no encontrada: {}", ex.getMessage());
         Map<String, String> body = new HashMap<>();
         body.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);

@@ -2,6 +2,9 @@ package gov.justucuman.seguridad_barrial.domain;
 
 import java.util.UUID;
 
+import lombok.Getter;
+
+@Getter
 public class Propietario {
 
     private final UUID id;
@@ -49,31 +52,5 @@ public class Propietario {
         );
     }
 
-    public UUID getId() {
-        return id;
-    }
 
-    public Nombre getNombre() {
-        return nombre;
-    }
-
-    public Apellido getApellido() {
-        return apellido;
-    }
-
-    public Dni getDni() {
-        return dni;
-    }
-
-    public Direccion getDireccion() {
-        return direccion;
-    }
-
-    public Telefono getTelefono() {
-        return telefono;
-    }
-
-    public Email getEmail() {
-        return email;
-    }
 }
