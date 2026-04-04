@@ -1,5 +1,6 @@
 package gov.justucuman.seguridad_barrial.infrastructure.input;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import gov.justucuman.seguridad_barrial.application.PropietarioByIdUpdater;
 import gov.justucuman.seguridad_barrial.application.PropietarioByIdUpdaterCommand;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+@Tag(name = "Propietarios")
 @Slf4j
 @RestController
 @RequestMapping("/api/propietarios")
