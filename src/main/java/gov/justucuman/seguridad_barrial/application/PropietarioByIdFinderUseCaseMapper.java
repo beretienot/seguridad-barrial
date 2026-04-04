@@ -5,7 +5,7 @@ import gov.justucuman.seguridad_barrial.domain.Propietario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface PropietarioByIdFinderUseCaseMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "nombre", expression = "java(propietario.getNombre().getValor())")

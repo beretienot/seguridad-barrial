@@ -5,11 +5,9 @@ import gov.justucuman.seguridad_barrial.domain.PropiedadCreatorOutputPort;
 import gov.justucuman.seguridad_barrial.domain.PropietarioByIdFinderOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
 @Slf4j
 @RequiredArgsConstructor
 public class PropiedadCreatorUseCase implements PropiedadCreator {

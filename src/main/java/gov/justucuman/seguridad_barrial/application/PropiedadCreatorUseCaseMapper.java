@@ -9,7 +9,7 @@ import gov.justucuman.seguridad_barrial.domain.UbicacionGps;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", imports = {Direccion.class, PropietarioId.class, Provincia.class, Localidad.class, UbicacionGps.class})
+@Mapper(imports = {Direccion.class, PropietarioId.class, Provincia.class, Localidad.class, UbicacionGps.class})
 public interface PropiedadCreatorUseCaseMapper {
 
     @Mapping(target = "propietarioId", expression = "java(new PropietarioId(command.getPropietarioId()))")

@@ -5,10 +5,8 @@ import gov.justucuman.seguridad_barrial.domain.PropiedadByIdFinderOutputPort;
 import gov.justucuman.seguridad_barrial.domain.PropiedadByIdUpdaterOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class PropiedadByIdUpdaterUseCase implements PropiedadByIdUpdater {
 

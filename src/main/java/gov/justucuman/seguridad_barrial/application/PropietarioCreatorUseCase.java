@@ -4,9 +4,7 @@ import gov.justucuman.seguridad_barrial.domain.PropietarioCreatorOutputPort;
 import gov.justucuman.seguridad_barrial.domain.Propietario;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
 @RequiredArgsConstructor
 public class PropietarioCreatorUseCase implements PropietarioCreator {

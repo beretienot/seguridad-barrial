@@ -3,12 +3,10 @@ package gov.justucuman.seguridad_barrial.application;
 import gov.justucuman.seguridad_barrial.domain.PropiedadByIdDeleterOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class PropiedadByIdDeleterUseCase implements PropiedadByIdDeleter {
 

@@ -10,7 +10,7 @@ import gov.justucuman.seguridad_barrial.domain.Telefono;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", imports = {Nombre.class, Apellido.class, Dni.class, Direccion.class, Telefono.class, Email.class})
+@Mapper(imports = {Nombre.class, Apellido.class, Dni.class, Direccion.class, Telefono.class, Email.class})
 public interface PropietarioCreatorUseCaseMapper {
 
     @Mapping(target = "nombre", expression = "java(new Nombre(command.getNombre()))")

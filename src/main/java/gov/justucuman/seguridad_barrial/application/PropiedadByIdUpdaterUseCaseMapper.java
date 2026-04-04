@@ -5,9 +5,7 @@ import gov.justucuman.seguridad_barrial.domain.Localidad;
 import gov.justucuman.seguridad_barrial.domain.Propiedad;
 import gov.justucuman.seguridad_barrial.domain.Provincia;
 import gov.justucuman.seguridad_barrial.domain.UbicacionGps;
-import org.springframework.stereotype.Component;
 
-@Component
 public class PropiedadByIdUpdaterUseCaseMapper {
 
     public Propiedad applyUpdate(PropiedadByIdUpdaterCommand command, Propiedad existing) {

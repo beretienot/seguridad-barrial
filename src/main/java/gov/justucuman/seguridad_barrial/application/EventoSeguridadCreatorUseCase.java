@@ -7,9 +7,7 @@ import gov.justucuman.seguridad_barrial.domain.Propiedad;
 import gov.justucuman.seguridad_barrial.domain.PropiedadByIdFinderOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
 @RequiredArgsConstructor
 public class EventoSeguridadCreatorUseCase implements EventoSeguridadCreator {

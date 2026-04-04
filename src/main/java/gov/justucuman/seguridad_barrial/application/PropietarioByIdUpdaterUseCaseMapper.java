@@ -7,9 +7,7 @@ import gov.justucuman.seguridad_barrial.domain.Email;
 import gov.justucuman.seguridad_barrial.domain.Nombre;
 import gov.justucuman.seguridad_barrial.domain.Propietario;
 import gov.justucuman.seguridad_barrial.domain.Telefono;
-import org.springframework.stereotype.Component;
 
-@Component
 public class PropietarioByIdUpdaterUseCaseMapper {
 
     public Propietario applyUpdate(PropietarioByIdUpdaterCommand command, Propietario existing) {

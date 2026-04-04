@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
 
-@Mapper(componentModel = "spring", imports = {
+@Mapper(imports = {
         PropiedadId.class,
         TipoEventoSeguridad.class,
         DescripcionEventoSeguridad.class,
