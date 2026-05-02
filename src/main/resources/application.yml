@@ -1,11 +1,6 @@
 spring:
   application:
     name: seguridad-barrial
-  datasource:
-    url: jdbc:postgresql://localhost:5432/seguridad_barrial
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: clave
   jpa:
     hibernate:
       ddl-auto: none

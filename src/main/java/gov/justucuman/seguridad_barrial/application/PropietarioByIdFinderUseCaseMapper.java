@@ -1,6 +1,5 @@
 package gov.justucuman.seguridad_barrial.application;
 
-import gov.justucuman.seguridad_barrial.application.PropietarioByIdFinderResult;
 import gov.justucuman.seguridad_barrial.domain.Propietario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

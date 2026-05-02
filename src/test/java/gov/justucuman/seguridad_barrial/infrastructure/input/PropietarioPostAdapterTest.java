@@ -3,7 +3,6 @@ package gov.justucuman.seguridad_barrial.infrastructure.input;
 import tools.jackson.databind.ObjectMapper;
 import gov.justucuman.seguridad_barrial.application.PropietarioCreator;
 import gov.justucuman.seguridad_barrial.infrastructure.input.dto.PropietarioCreatorRequestMother;
-import gov.justucuman.seguridad_barrial.infrastructure.input.PropietarioCreatorAdapterMapperImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

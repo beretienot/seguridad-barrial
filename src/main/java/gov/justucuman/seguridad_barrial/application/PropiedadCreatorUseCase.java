@@ -6,8 +6,6 @@ import gov.justucuman.seguridad_barrial.domain.PropietarioByIdFinderOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.UUID;
-
 @Slf4j
 @RequiredArgsConstructor
 public class PropiedadCreatorUseCase implements PropiedadCreator {
