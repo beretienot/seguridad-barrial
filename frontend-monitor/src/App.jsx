@@ -23,17 +23,23 @@ function toNumberOrNull(value) {
 
 function buildOsmEmbedUrl(lat, lon) {
   const delta = 0.008;
-  const minLon = lon - delta;
-  const minLat = lat - delta;
-  const maxLon = lon + delta;
-  const maxLat = lat + delta;
-
-  const bbox = `${minLon}%2C${minLat}%2C${maxLon}%2C${maxLat}`;
+  const bbox = `${lon - delta}%2C${lat - delta}%2C${lon + delta}%2C${lat + delta}`;
   return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lon}`;
+}
+
+async function enrichEvent(event) {
+  try {
+    const propiedad = await fetch(`${API_BASE_URL}/api/propiedades/${event.propiedadId}`).then((r) => r.json());
+    const propietario = await fetch(`${API_BASE_URL}/api/propietarios/${propiedad.propietarioId}`).then((r) => r.json());
+    return { ...event, propiedad, propietario };
+  } catch {
+    return event;
+  }
 }
 
 export default function App() {
   const [events, setEvents] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [status, setStatus] = useState("connecting");
   const [soundEnabled, setSoundEnabled] = useState(false);
   const audioContextRef = useRef(null);
@@ -72,36 +78,22 @@ export default function App() {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
-
-      if (!audioContextRef.current) {
-        audioContextRef.current = new AudioCtx();
-      }
-
+      if (!audioContextRef.current) audioContextRef.current = new AudioCtx();
       const context = audioContextRef.current;
-      if (context.state === "suspended") {
-        await context.resume();
-      }
-
-      const normalizedType = String(eventType || "").trim().toUpperCase();
-      const pattern = soundByType[normalizedType] || soundByType.DEFAULT;
-
+      if (context.state === "suspended") await context.resume();
+      const pattern = soundByType[String(eventType || "").trim().toUpperCase()] || soundByType.DEFAULT;
       pattern.forEach((tone) => {
         const oscillator = context.createOscillator();
         const gainNode = context.createGain();
-
         oscillator.type = tone.type;
         oscillator.frequency.value = tone.frequency;
-
         const startAt = context.currentTime + tone.delay;
         const endAt = startAt + tone.duration;
-
         gainNode.gain.setValueAtTime(0.0001, startAt);
         gainNode.gain.exponentialRampToValueAtTime(tone.gain, startAt + 0.02);
         gainNode.gain.exponentialRampToValueAtTime(0.0001, endAt);
-
         oscillator.connect(gainNode);
         gainNode.connect(context.destination);
-
         oscillator.start(startAt);
         oscillator.stop(endAt + 0.01);
       });
@@ -116,39 +108,34 @@ export default function App() {
       await playNotificationSound("DEFAULT");
       return;
     }
-
     setSoundEnabled(false);
   };
 
   useEffect(() => {
     const source = new EventSource(`${API_BASE_URL}/api/eventos-seguridad/stream`);
 
-    source.addEventListener("open", () => {
-      setStatus("connected");
-    });
+    source.addEventListener("open", () => setStatus("connected"));
 
-    source.addEventListener("evento-seguridad", (evt) => {
+    source.addEventListener("evento-seguridad", async (evt) => {
       let eventType = "DEFAULT";
       try {
         const payload = JSON.parse(evt.data);
         eventType = payload?.tipo;
-        setEvents((prev) => [payload, ...prev].slice(0, 50));
+        const enriched = await enrichEvent(payload);
+        setEvents((prev) => {
+          const next = [enriched, ...prev].slice(0, 50);
+          return next;
+        });
+        setSelectedId((prev) => prev ?? enriched.id);
       } catch {
-        setEvents((prev) => [{ raw: evt.data, fecha: new Date().toISOString() }, ...prev].slice(0, 50));
+        setEvents((prev) => [{ raw: evt.data, id: Date.now(), fecha: new Date().toISOString() }, ...prev].slice(0, 50));
       }
-
-      if (soundEnabledRef.current) {
-        playNotificationSound(eventType);
-      }
+      if (soundEnabledRef.current) playNotificationSound(eventType);
     });
 
-    source.onerror = () => {
-      setStatus("disconnected");
-    };
+    source.onerror = () => setStatus("disconnected");
 
-    return () => {
-      source.close();
-    };
+    return () => source.close();
   }, []);
 
   useEffect(() => {
@@ -166,13 +153,13 @@ export default function App() {
     return "Conectando";
   }, [status]);
 
-  const latestEventWithLocation = useMemo(
-    () => events.find((event) => toNumberOrNull(event?.latitud) !== null && toNumberOrNull(event?.longitud) !== null),
-    [events]
+  const selectedEvent = useMemo(
+    () => events.find((e) => e.id === selectedId) ?? null,
+    [events, selectedId]
   );
 
-  const latestLatitude = toNumberOrNull(latestEventWithLocation?.latitud);
-  const latestLongitude = toNumberOrNull(latestEventWithLocation?.longitud);
+  const mapLat = toNumberOrNull(selectedEvent?.latitud);
+  const mapLon = toNumberOrNull(selectedEvent?.longitud);
 
   return (
     <main className="screen">
@@ -189,36 +176,65 @@ export default function App() {
 
       <section className="feed">
         <article className="map-card">
-          <h2>Ubicación del Último Evento</h2>
-          {latestLatitude !== null && latestLongitude !== null ? (
+          <h2>
+            {selectedEvent
+              ? `Ubicación — ${selectedEvent.propiedad?.direccion ?? "Evento seleccionado"}`
+              : "Ubicación del Evento"}
+          </h2>
+          {mapLat !== null && mapLon !== null ? (
             <>
               <iframe
                 title="Mapa del evento"
                 className="map-frame"
                 loading="lazy"
-                src={buildOsmEmbedUrl(latestLatitude, latestLongitude)}
+                src={buildOsmEmbedUrl(mapLat, mapLon)}
               />
               <small>
-                Lat: {latestLatitude.toFixed(6)} | Lon: {latestLongitude.toFixed(6)}
+                Lat: {mapLat.toFixed(6)} | Lon: {mapLon.toFixed(6)}
               </small>
             </>
           ) : (
-            <p className="map-empty">Aún no hay coordenadas disponibles para mostrar en el mapa.</p>
+            <p className="map-empty">
+              {selectedEvent
+                ? "Este evento no tiene coordenadas registradas."
+                : "Seleccioná un evento para ver su ubicación."}
+            </p>
           )}
         </article>
 
         {events.length === 0 ? (
           <article className="empty">Aún no se recibieron eventos. Esperando reportes...</article>
         ) : (
-          events.map((event, index) => (
-            <article className="item" key={`${event.id || "evt"}-${index}`}>
+          events.map((event) => (
+            <article
+              className={`item${selectedId === event.id ? " selected" : ""}`}
+              key={event.id}
+              onClick={() => setSelectedId(event.id)}
+              style={{ cursor: "pointer" }}
+            >
               <div className="row">
-                <strong>{event.tipo || "EVENTO"}</strong>
+                <strong className={`tipo tipo-${(event.tipo || "OTRO").toLowerCase()}`}>
+                  {event.tipo || "EVENTO"}
+                </strong>
                 <time>{formatDateTime(event.fecha)}</time>
               </div>
+
               <p>{event.descripcion || event.raw}</p>
-              <small>Propiedad: {event.propiedadId || "-"}</small>
-              {(toNumberOrNull(event?.latitud) !== null && toNumberOrNull(event?.longitud) !== null) && (
+
+              {event.propiedad && (
+                <small>
+                  <strong>Propiedad:</strong> {event.propiedad.direccion}
+                  {event.propiedad.localidad ? `, ${event.propiedad.localidad}` : ""}
+                </small>
+              )}
+
+              {event.propietario && (
+                <small>
+                  <strong>Propietario:</strong> {event.propietario.apellido}, {event.propietario.nombre}
+                </small>
+              )}
+
+              {toNumberOrNull(event?.latitud) !== null && toNumberOrNull(event?.longitud) !== null && (
                 <small>
                   Coordenadas: {toNumberOrNull(event.latitud).toFixed(6)}, {toNumberOrNull(event.longitud).toFixed(6)}
                 </small>

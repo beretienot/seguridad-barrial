@@ -87,7 +87,7 @@ export default function App() {
         type: "ok",
         message: "Evento reportado. Los monitores conectados deberían recibir la notificación en tiempo real.",
       });
-      setForm((prev) => ({ ...prev, descripcion: "", fecha: nowLocalDateTime() }));
+      setForm({ propietarioId: "", propiedadId: "", tipo: "ROBO", descripcion: "", fecha: nowLocalDateTime() });
     } catch (error) {
       setStatus({ type: "error", message: error.message || "No se pudo enviar el evento." });
     } finally {
