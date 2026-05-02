@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -18,9 +18,11 @@ function nowLocalDateTime() {
 }
 
 export default function App() {
+  const [propietarios, setPropietarios] = useState([]);
+  const [propiedades, setPropiedades] = useState([]);
   const [form, setForm] = useState({
+    propietarioId: "",
     propiedadId: "",
-    eventoId: generateUuid(),
     tipo: "ROBO",
     descripcion: "",
     fecha: nowLocalDateTime(),
@@ -28,16 +30,29 @@ export default function App() {
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [loading, setLoading] = useState(false);
 
-  const disabled = useMemo(() => {
-    return (
-      loading ||
-      !form.propiedadId.trim() ||
-      !form.eventoId.trim() ||
-      !form.tipo.trim() ||
-      !form.descripcion.trim() ||
-      !form.fecha.trim()
-    );
-  }, [form, loading]);
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/propietarios`)
+      .then((res) => res.json())
+      .then(setPropietarios)
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!form.propietarioId) {
+      setPropiedades([]);
+      setForm((prev) => ({ ...prev, propiedadId: "" }));
+      return;
+    }
+    fetch(`${API_BASE_URL}/api/propietarios/${form.propietarioId}/propiedades`)
+      .then((res) => res.json())
+      .then(setPropiedades)
+      .catch(() => {});
+  }, [form.propietarioId]);
+
+  const disabled = useMemo(
+    () => loading || !form.propiedadId || !form.tipo || !form.descripcion.trim() || !form.fecha,
+    [form, loading]
+  );
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -53,11 +68,9 @@ export default function App() {
         `${API_BASE_URL}/api/propiedades/${form.propiedadId}/eventos-seguridad`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            id: form.eventoId,
+            id: generateUuid(),
             tipo: form.tipo,
             descripcion: form.descripcion,
             fecha: new Date(form.fecha).toISOString().slice(0, 19),
@@ -74,12 +87,7 @@ export default function App() {
         type: "ok",
         message: "Evento reportado. Los monitores conectados deberían recibir la notificación en tiempo real.",
       });
-      setForm((prev) => ({
-        ...prev,
-        eventoId: generateUuid(),
-        descripcion: "",
-        fecha: nowLocalDateTime(),
-      }));
+      setForm((prev) => ({ ...prev, descripcion: "", fecha: nowLocalDateTime() }));
     } catch (error) {
       setStatus({ type: "error", message: error.message || "No se pudo enviar el evento." });
     } finally {
@@ -98,13 +106,31 @@ export default function App() {
 
         <form onSubmit={handleSubmit} className="grid">
           <label>
-            Propiedad ID
-            <input value={form.propiedadId} onChange={handleChange("propiedadId")} placeholder="UUID de la propiedad" />
+            Propietario
+            <select value={form.propietarioId} onChange={handleChange("propietarioId")}>
+              <option value="">Seleccioná un propietario...</option>
+              {propietarios.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.apellido}, {p.nombre}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
-            Evento ID
-            <input value={form.eventoId} onChange={handleChange("eventoId")} placeholder="UUID del evento" />
+            Propiedad
+            <select
+              value={form.propiedadId}
+              onChange={handleChange("propiedadId")}
+              disabled={!form.propietarioId || propiedades.length === 0}
+            >
+              <option value="">Seleccioná una propiedad...</option>
+              {propiedades.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.direccion} – {p.localidad}
+                </option>
+              ))}
+            </select>
           </label>
 
           <label>
